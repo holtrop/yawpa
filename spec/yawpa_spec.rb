@@ -49,5 +49,13 @@ describe Yawpa do
       opts[:opt].should eq(['val1', 'val2'])
       args.should eq([])
     end
+
+    it "raises an exception when not enough arguments for an option are given" do
+      options = {
+        opt: {nargs: 2},
+      }
+      params = ['--opt', 'val']
+      expect { Yawpa.parse(params, options) }.to raise_error
+    end
   end
 end
