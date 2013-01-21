@@ -67,5 +67,15 @@ describe Yawpa do
       opts[:opt].should eq('thevalue')
       args.should eq(['arg'])
     end
+
+    it "uses --opt=val for the first option argument when nargs > 1" do
+      options = {
+        opt: {nargs: 2},
+      }
+      params = ['--opt=val1', 'val2', 'arg']
+      opts, args = Yawpa.parse(params, options)
+      opts[:opt].should eq(['val1', 'val2'])
+      args.should eq(['arg'])
+    end
   end
 end
