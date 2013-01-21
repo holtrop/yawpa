@@ -29,5 +29,15 @@ describe Yawpa do
       opts.include?(:three).should be_false
       args.should eq(['arg', 'arg2'])
     end
+
+    it "returns an option's value when nargs = 1" do
+      options = {
+        opt: {nargs: 1},
+      }
+      params = ['--opt', 'val', 'arg']
+      opts, args = Yawpa.parse(params, options)
+      opts[:opt].should eq('val')
+      args.should eq(['arg'])
+    end
   end
 end
