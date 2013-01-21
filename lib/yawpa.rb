@@ -1,5 +1,8 @@
 require "yawpa/version"
 
 module Yawpa
-  # Your code goes here...
+  module_function
+  def parse(config, params)
+    return [[], params]
+  end
 end
