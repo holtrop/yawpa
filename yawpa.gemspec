@@ -4,8 +4,8 @@ require File.expand_path('../lib/yawpa/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Josh Holtrop"]
   gem.email         = ["jholtrop@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Yet Another Way to Parse Arguments is an argument-parsing library for Ruby}
+  gem.summary       = %q{Yet Another Way to Parse Arguments}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
