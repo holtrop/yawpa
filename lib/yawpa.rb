@@ -18,7 +18,7 @@ module Yawpa
     i = 0
     while i < params.length
       param = params[i]
-      if param =~ /^(-+)([^=]+)(=.+)?$/
+      if param =~ /^(--?)([^=]+)(?:=(.+))?$/
         leader, param_name, val = $1, $2, $3
         case leader.length
         when 2
@@ -37,22 +37,18 @@ module Yawpa
           if nargs == 0
             opts[param_key] = true
           elsif nargs.class == Fixnum
-            n_gathered = 0
             opts[param_key] = []
-            if val
-              opts[param_key] << val[1, val.length]
-              n_gathered += 1
-            end
-            while n_gathered < nargs
-              if i + 1 >= params.length
+            opts[param_key] << val if val
+            if opts[param_key].length < nargs
+              gathered = _gather(i + 1, nargs - opts[param_key].length, params)
+              i += gathered.length
+              opts[param_key] += gathered
+              if opts[param_key].length < nargs
                 raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_name}'")
               end
-              i += 1
-              opts[param_key] << params[i]
-              n_gathered += 1
             end
-            if n_gathered == 1
-              opts[param_key] = opts[param_key][0]
+            if opts[param_key].length == 1
+              opts[param_key] = opts[param_key].first
             end
           elsif nargs.class == Range
           end
@@ -63,5 +59,18 @@ module Yawpa
       i += 1
     end
     return [opts, args]
+  end
+
+  def _gather(start_idx, max, params)
+    result = []
+    index = start_idx
+    loop do
+      break if index >= params.length
+      break if params[index][0] == '-'
+      result << params[index]
+      index += 1
+      break if result.length == max
+    end
+    result
   end
 end
