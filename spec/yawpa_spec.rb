@@ -57,5 +57,15 @@ describe Yawpa do
       params = ['--opt', 'val']
       expect { Yawpa.parse(params, options) }.to raise_error
     end
+
+    it "uses --opt=val syntax for an option's value" do
+      options = {
+        opt: {nargs: 1},
+      }
+      params = ['--opt=thevalue', 'arg']
+      opts, args = Yawpa.parse(params, options)
+      opts[:opt].should eq('thevalue')
+      args.should eq(['arg'])
+    end
   end
 end
