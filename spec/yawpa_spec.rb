@@ -39,5 +39,15 @@ describe Yawpa do
       opts[:opt].should eq('val')
       args.should eq(['arg'])
     end
+
+    it "returns an option's values when nargs = 2" do
+      options = {
+        opt: {nargs: 2},
+      }
+      params = ['--opt', 'val1', 'val2']
+      opts, args = Yawpa.parse(params, options)
+      opts[:opt].should eq(['val1', 'val2'])
+      args.should eq([])
+    end
   end
 end
