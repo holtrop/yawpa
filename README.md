@@ -4,8 +4,7 @@ Yet Another Way to Parse Arguments is an argument-parsing library for Ruby.
 
 ## Features
 
-- Arbitrarily nested subcommands
-- Entire hierarchical option configuration can be specified in one location or option configuration can be separated by subcommand
+- POSIX or non-POSIX mode (supports subcommands using POSIX mode)
 - Options can require an arbitrary number of parameters
 - Options can be defined with a range specifying the allowed number of parameters
 
