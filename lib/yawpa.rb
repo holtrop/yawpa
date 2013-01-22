@@ -39,9 +39,6 @@ module Yawpa
               raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
             end
           end
-          if opts[param_key].length == 1
-            opts[param_key] = opts[param_key].first
-          end
         end
       elsif param =~ /^-(.+)$/
         short_flags = $1
@@ -76,6 +73,14 @@ module Yawpa
       end
       i += 1
     end
+
+    # Condense 1-element arrays of option values to just the element itself
+    opts.each_key do |k|
+      if opts[k].class == Array and opts[k].length == 1
+        opts[k] = opts[k].first
+      end
+    end
+
     return [opts, args]
   end
 

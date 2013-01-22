@@ -107,5 +107,15 @@ describe Yawpa do
       opts[:option].should be_true
       args.should eq(['qqq'])
     end
+
+    it "returns option argument at next position for a short option" do
+      options = {
+        option: {nargs: 1, short: 'o'},
+      }
+      params = ['-o', 'val', 'rrr']
+      opts, args = Yawpa.parse(params, options)
+      opts[:option].should eq('val')
+      args.should eq(['rrr'])
+    end
   end
 end
