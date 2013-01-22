@@ -87,5 +87,15 @@ describe Yawpa do
       opts[:opt].should eq('val2')
       args.should eq(['arg1', 'arg2'])
     end
+
+    it "accepts strings as keys for option configuration" do
+      options = {
+        'crazy-option' => {nargs: 1},
+      }
+      params = ['xxx', '--crazy-option', 'yyy', 'zzz']
+      opts, args = Yawpa.parse(params, options)
+      opts['crazy-option'].should eq('yyy')
+      args.should eq(['xxx', 'zzz'])
+    end
   end
 end
