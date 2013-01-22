@@ -36,21 +36,21 @@ module Yawpa
           nargs = opt_config[:nargs] || 0
           if nargs == 0
             opts[param_key] = true
-          elsif nargs.class == Fixnum
+          else
+            nargs = (nargs..nargs) if nargs.class == Fixnum
             opts[param_key] = []
             opts[param_key] << val if val
-            if opts[param_key].length < nargs
-              gathered = _gather(i + 1, nargs - opts[param_key].length, params)
+            if opts[param_key].length < nargs.last
+              gathered = _gather(i + 1, nargs.last - opts[param_key].length, params)
               i += gathered.length
               opts[param_key] += gathered
-              if opts[param_key].length < nargs
+              if opts[param_key].length < nargs.first
                 raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_name}'")
               end
             end
             if opts[param_key].length == 1
               opts[param_key] = opts[param_key].first
             end
-          elsif nargs.class == Range
           end
         end
       else
