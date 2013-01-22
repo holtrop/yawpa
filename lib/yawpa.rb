@@ -36,12 +36,40 @@ module Yawpa
             i += gathered.length
             opts[param_key] += gathered
             if opts[param_key].length < opt_config[:nargs].first
-              raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_name}'")
+              raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
             end
           end
           if opts[param_key].length == 1
             opts[param_key] = opts[param_key].first
           end
+        end
+      elsif param =~ /^-(.+)$/
+        short_flags = $1
+        short_idx = 0
+        while short_idx < short_flags.length
+          opt_config = _find_opt_config_by_short_name(options, short_flags[short_idx])
+          if opt_config.nil?
+            raise UnknownOptionException.new("Unknown option '-#{short_flags[short_idx]}'")
+          end
+          param_key = opt_config[:key]
+          if opt_config[:nargs].last == 0
+            opts[param_key] = true
+          else
+            opts[param_key] = []
+            if short_idx + 1 < short_flags.length
+              opts[param_key] << short_flags[short_idx + 1, short_flags.length]
+            end
+            if opts[param_key].length < opt_config[:nargs].last
+              gathered = _gather(i + 1, opt_config[:nargs].last - opts[param_key].length, params)
+              i += gathered.length
+              opts[param_key] += gathered
+              if opts[param_key].length < opt_config[:nargs].first
+                raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
+              end
+            end
+            break
+          end
+          short_idx += 1
         end
       else
         args << params[i]
@@ -72,7 +100,15 @@ module Yawpa
         nargs = v[:nargs] || 0
         nargs = (nargs..nargs) if nargs.class == Fixnum
         newopts[newkey][:nargs] = nargs
+        newopts[newkey][:short] = v[:short] || ''
       end
     end
+  end
+
+  def _find_opt_config_by_short_name(options, short_name)
+    options.each_pair do |k, v|
+      return v if v[:short] == short_name
+    end
+    nil
   end
 end

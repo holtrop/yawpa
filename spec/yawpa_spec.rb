@@ -97,5 +97,15 @@ describe Yawpa do
       opts['crazy-option'].should eq('yyy')
       args.should eq(['xxx', 'zzz'])
     end
+
+    it "accepts short options corresponding to a long option" do
+      options = {
+        option: {short: 'o'},
+      }
+      params = ['-o', 'qqq']
+      opts, args = Yawpa.parse(params, options)
+      opts[:option].should be_true
+      args.should eq(['qqq'])
+    end
   end
 end
