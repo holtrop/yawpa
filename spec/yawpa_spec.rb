@@ -47,7 +47,7 @@ describe Yawpa do
       params = ['--opt', 'val1', 'val2']
       opts, args = Yawpa.parse(params, options)
       opts[:opt].should eq(['val1', 'val2'])
-      args.should eq([])
+      args.should be_empty
     end
 
     it "raises an exception when not enough arguments for an option are given" do
@@ -116,6 +116,90 @@ describe Yawpa do
       opts, args = Yawpa.parse(params, options)
       opts[:option].should eq('val')
       args.should eq(['rrr'])
+    end
+
+    it "returns option argument immediately following short option" do
+      options = {
+        option: {nargs: 1, short: 'o'},
+      }
+      params = ['-oval', 'rrr']
+      opts, args = Yawpa.parse(params, options)
+      opts[:option].should eq('val')
+      args.should eq(['rrr'])
+    end
+
+    it "handles globbed-together short options" do
+      options = {
+        a: {short: 'a'},
+        b: {short: 'b'},
+        c: {short: 'c'},
+        d: {short: 'd'},
+      }
+      params = ['-abc', 'xyz']
+      opts, args = Yawpa.parse(params, options)
+      opts[:a].should be_true
+      opts[:b].should be_true
+      opts[:c].should be_true
+      opts[:d].should be_nil
+      args.should eq(['xyz'])
+    end
+
+    it "handles globbed-together short options with values following" do
+      options = {
+        a: {short: 'a'},
+        b: {short: 'b'},
+        c: {nargs: 1, short: 'c'},
+        d: {short: 'd'},
+      }
+      params = ['-abcfoo', 'bar']
+      opts, args = Yawpa.parse(params, options)
+      opts[:a].should be_true
+      opts[:b].should be_true
+      opts[:c].should eq('foo')
+      opts[:d].should be_nil
+      args.should eq(['bar'])
+    end
+
+    it "handles globbed-together short options with multiple values following" do
+      options = {
+        a: {short: 'a'},
+        b: {short: 'b'},
+        c: {nargs: 3, short: 'c'},
+        d: {short: 'd'},
+      }
+      params = ['-abcfoo', 'bar', 'baz']
+      opts, args = Yawpa.parse(params, options)
+      opts[:a].should be_true
+      opts[:b].should be_true
+      opts[:c].should eq(['foo', 'bar', 'baz'])
+      opts[:d].should be_nil
+      args.should be_empty
+    end
+
+    it "raises an error on an unknown short option" do
+      options = {
+        a: {short: 'a'},
+      }
+      params = ['-ab']
+      expect { Yawpa.parse(params, options) }.to raise_error
+    end
+
+    it "raises an error when not enough arguments are given to short option" do
+      options = {
+        a: {nargs: 1, short: 'a'},
+      }
+      params = ['-a']
+      expect { Yawpa.parse(params, options) }.to raise_error
+    end
+
+    it "overwrites option value when short option used after long" do
+      options = {
+        option: {nargs: 1, short: 'o'},
+      }
+      params = ['--option', 'VALUE', '-o', 'NEW_VALUE']
+      opts, args = Yawpa.parse(params, options)
+      opts[:option].should eq('NEW_VALUE')
+      args.should be_empty
     end
   end
 end
