@@ -12,7 +12,7 @@ module Yawpa
   class InvalidArgumentsException < Exception; end
 
   module_function
-  def parse(params, options)
+  def parse(params, options, flags = {})
     options = _massage_options(options)
     opts = {}
     args = []
@@ -50,6 +50,9 @@ module Yawpa
           end
           short_idx += 1
         end
+      elsif flags[:posix_order]
+        args = params[i, params.length]
+        break
       else
         args << params[i]
       end

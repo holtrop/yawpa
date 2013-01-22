@@ -201,5 +201,17 @@ describe Yawpa do
       opts[:option].should eq('NEW_VALUE')
       args.should be_empty
     end
+
+    it "ignores options after arguments in posix_order mode" do
+      options = {
+        one: {},
+        two: {},
+      }
+      params = ['--one', 'arg', '--two']
+      opts, args = Yawpa.parse(params, options, posix_order: true)
+      opts[:one].should be_true
+      opts[:two].should be_false
+      args.should eq(['arg', '--two'])
+    end
   end
 end
