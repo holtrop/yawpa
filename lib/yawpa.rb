@@ -30,15 +30,7 @@ module Yawpa
           opts[param_key] = true
         else
           opts[param_key] = []
-          opts[param_key] << val if val
-          if opts[param_key].length < opt_config[:nargs].last
-            gathered = _gather(i + 1, opt_config[:nargs].last - opts[param_key].length, params)
-            i += gathered.length
-            opts[param_key] += gathered
-            if opts[param_key].length < opt_config[:nargs].first
-              raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
-            end
-          end
+          i += _gather(opt_config[:nargs], i + 1, params, val, param_key, opts[param_key])
         end
       elsif param =~ /^-(.+)$/
         short_flags = $1
@@ -53,17 +45,7 @@ module Yawpa
             opts[param_key] = true
           else
             opts[param_key] = []
-            if short_idx + 1 < short_flags.length
-              opts[param_key] << short_flags[short_idx + 1, short_flags.length]
-            end
-            if opts[param_key].length < opt_config[:nargs].last
-              gathered = _gather(i + 1, opt_config[:nargs].last - opts[param_key].length, params)
-              i += gathered.length
-              opts[param_key] += gathered
-              if opts[param_key].length < opt_config[:nargs].first
-                raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
-              end
-            end
+            i += _gather(opt_config[:nargs], i + 1, params, short_flags[short_idx + 1, short_flags.length], param_key, opts[param_key])
             break
           end
           short_idx += 1
@@ -84,17 +66,26 @@ module Yawpa
     return [opts, args]
   end
 
-  def _gather(start_idx, max, params)
-    result = []
+  def _gather(nargs, start_idx, params, initial, param_key, result)
+    n_gathered = 0
+    if initial and initial != ''
+      result << initial
+      n_gathered += 1
+    end
+    num_indices_used = 0
     index = start_idx
-    loop do
-      break if index >= params.length
-      break if params[index][0] == '-'
+    while n_gathered < nargs.last and
+          index < params.length and
+          params[index][0] != '-' do
       result << params[index]
       index += 1
-      break if result.length == max
+      num_indices_used += 1
+      n_gathered += 1
     end
-    result
+    if n_gathered < nargs.first
+      raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
+    end
+    num_indices_used
   end
 
   def _massage_options(options)
