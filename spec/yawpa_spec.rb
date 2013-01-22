@@ -77,5 +77,15 @@ describe Yawpa do
       opts[:opt].should eq(['val1', 'val2'])
       args.should eq(['arg'])
     end
+
+    it "returns the last set value when an option is passed twice" do
+      options = {
+        opt: {nargs: 1},
+      }
+      params = ['--opt', 'val1', 'arg1', '--opt', 'val2', 'arg2']
+      opts, args = Yawpa.parse(params, options)
+      opts[:opt].should eq('val2')
+      args.should eq(['arg1', 'arg2'])
+    end
   end
 end
