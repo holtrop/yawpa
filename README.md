@@ -22,7 +22,7 @@ Or install it yourself as:
 
     $ gem install yawpa
 
-## Usage
+## Example 1
 
     require 'yawpa'
 
@@ -34,6 +34,26 @@ Or install it yourself as:
     }
     opts, args = Yawpa.parse(ARGV, options)
     opts.each_pair do |opt, val|
+    end
+
+## Example 2
+
+    require 'yawpa'
+
+    options = {
+      version: {},
+      help: {short: 'h'},
+    }
+    opts, args = Yawpa.parse(ARGV, options, posix_order: true)
+    if opts[:version]
+      puts "my app, version 1.2.3"
+    end
+    if args[0] == 'subcommand'
+      subcommand_options = {
+        'server': {nargs: (1..2), short: 's'},
+        'dst': {nargs: 1, short: 'd'},
+      }
+      opts, args = Yawpa.parse(args, subcommand_options)
     end
 
 ## Contributing
