@@ -3,7 +3,7 @@ require "yawpa/version"
 # Example options configuration:
 # {
 #   version: {},
-#   verbose: {aliases: ['-v']},
+#   verbose: {short: 'v'},
 #   get: {nargs: 1},
 #   set: {nargs: 2},
 # }

@@ -24,7 +24,17 @@ Or install it yourself as:
 
 ## Usage
 
-require 'yawpa'
+    require 'yawpa'
+
+    options = {
+      version: {},
+      verbose: {short: 'v'},
+      get: {nargs: 1},
+      set: {nargs: 2},
+    }
+    opts, args = Yawpa.parse(ARGV, options)
+    opts.each_pair do |opt, val|
+    end
 
 ## Contributing
 
