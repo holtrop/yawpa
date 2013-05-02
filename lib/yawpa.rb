@@ -1,17 +1,42 @@
 require "yawpa/version"
 
-# Example options configuration:
-# {
-#   version: {},
-#   verbose: {short: 'v'},
-#   get: {nargs: 1},
-#   set: {nargs: 2},
-# }
+# Yet Another Way to Parse Arguments is an argument-parsing library for Ruby.
+#
+# Yawpa does not try to provide a fancy DSL.
+# It does not require you to define a class or inherit from a class.
+# it just provides a simple functional interface for parsing options,
+# supporting subcommands and arbitrary numbers of arguments for each option.
+#
+# == Features
+#
+# - POSIX or non-POSIX mode (supports subcommands using POSIX mode)
+# - Options can require an arbitrary number of parameters
+# - Options can be defined with a range specifying the allowed number of parameters
 module Yawpa
+  # Exception class raised when an unknown option is observed
   class UnknownOptionException < Exception; end
+
+  # Exception class raised when invalid option arguments are observed
   class InvalidArgumentsException < Exception; end
 
   module_function
+  # Parse input arguments looking for options according to rules given in flags
+  #
+  # This is the main API function for the Yawpa module
+  #
+  # Example options configuration:
+  # {
+  #   version: {},
+  #   verbose: {short: 'v'},
+  #   get: {nargs: 1},
+  #   set: {nargs: 2},
+  # }
+  #
+  # Options that have no special flags should have an empty hash as the value.
+  # Option flags:
+  #   - short: specify a short option letter to associate with the long option
+  #   - nargs: specify an exact number or range of possible numbers of
+  #     arguments to the option
   def parse(params, options, flags = {})
     options = _massage_options(options)
     opts = {}
@@ -69,7 +94,8 @@ module Yawpa
     return [opts, args]
   end
 
-  def _gather(nargs, start_idx, params, initial, param_key, result)
+  # Internal helper method to gather arguments for an option
+  def _gather(nargs, start_idx, params, initial, param_key, result) # :nodoc:
     n_gathered = 0
     if initial and initial != ''
       result << initial
@@ -91,7 +117,8 @@ module Yawpa
     num_indices_used
   end
 
-  def _massage_options(options)
+  # Internal helper method to format the options in a consistent format
+  def _massage_options(options) # :nodoc:
     {}.tap do |newopts|
       options.each_pair do |k, v|
         newkey = k.to_s
@@ -104,7 +131,8 @@ module Yawpa
     end
   end
 
-  def _find_opt_config_by_short_name(options, short_name)
+  # Internal helper method to find an option configuration by short name
+  def _find_opt_config_by_short_name(options, short_name) # :nodoc:
     options.each_pair do |k, v|
       return v if v[:short] == short_name
     end
