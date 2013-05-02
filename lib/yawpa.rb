@@ -57,7 +57,7 @@ module Yawpa
   # keys and any option arguments as values.
   # The returned +args+ will be an array of the unprocessed parameters (if
   # +:posix_order+ was passed in +flags+, this array might contain further
-  # options that were not processed after observing a non-option parameters.
+  # options that were not processed after observing a non-option parameters).
   def parse(params, options, flags = {})
     options = _massage_options(options)
     opts = {}

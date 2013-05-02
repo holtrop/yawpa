@@ -83,4 +83,4 @@ The returned `opts` value will be a hash with the observed options as
 keys and any option arguments as values.
 The returned `args` will be an array of the unprocessed parameters (if
 `:posix_order` was passed in `flags`, this array might contain further
-options that were not processed after observing a non-option parameters.
+options that were not processed after observing a non-option parameters).
