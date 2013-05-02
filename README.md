@@ -8,20 +8,6 @@ Yet Another Way to Parse Arguments is an argument-parsing library for Ruby.
 - Options can require an arbitrary number of parameters
 - Options can be defined with a range specifying the allowed number of parameters
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'yawpa'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install yawpa
-
 ## Example 1
 
     require 'yawpa'
@@ -56,10 +42,45 @@ Or install it yourself as:
       opts, args = Yawpa.parse(args, subcommand_options)
     end
 
-## Contributing
+## Using Yawpa.parse()
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+    opts, args = Yawpa.parse(params, options, flags = {})
+
+Parse input parameters looking for options according to rules given in flags
+
+- `params` is the list of program parameters to parse.
+- `options` is a hash containing the long option names as keys, and hashes
+  containing special flags for the options as values (example below).
+- `flags` is optional. It supports the following keys:
+  - `:posix_order`: Stop processing parameters when a non-option is seen.
+    Set this to `true` if you want to implement subcommands.
+
+An ArgumentParsingException will be raised if an unknown option is observed
+or insufficient arguments are present for an option.
+
+### Example `options`
+
+  {
+    version: {},
+    verbose: {short: 'v'},
+    server: {nargs: (1..2)},
+    username: {nargs: 1},
+    password: {nargs: 1},
+  }
+
+The keys of the `options` hash can be either strings or symbols.
+
+Options that have no special flags should have an empty hash as the value.
+
+Possible option flags:
+- `:short`: specify a short option letter to associate with the long option
+- `:nargs`: specify an exact number or range of possible numbers of
+  arguments to the option
+
+### Return values
+
+The returned `opts` value will be a hash with the observed options as
+keys and any option arguments as values.
+The returned `args` will be an array of the unprocessed parameters (if
+`:posix_order` was passed in `flags`, this array might contain further
+options that were not processed after observing a non-option parameters.
