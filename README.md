@@ -60,13 +60,13 @@ or insufficient arguments are present for an option.
 
 ### Example `options`
 
-  {
-    version: {},
-    verbose: {short: 'v'},
-    server: {nargs: (1..2)},
-    username: {nargs: 1},
-    password: {nargs: 1},
-  }
+    {
+      version: {},
+      verbose: {short: 'v'},
+      server: {nargs: (1..2)},
+      username: {nargs: 1},
+      password: {nargs: 1},
+    }
 
 The keys of the `options` hash can be either strings or symbols.
 
