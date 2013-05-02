@@ -20,23 +20,44 @@ module Yawpa
   class InvalidArgumentsException < Exception; end
 
   module_function
-  # Parse input arguments looking for options according to rules given in flags
+  # :call-seq:
+  #   opts, args = parse(params, options, flags = {})
   #
-  # This is the main API function for the Yawpa module
+  # Parse input parameters looking for options according to rules given in flags
   #
-  # Example options configuration:
-  # {
-  #   version: {},
-  #   verbose: {short: 'v'},
-  #   get: {nargs: 1},
-  #   set: {nargs: 2},
-  # }
+  # - +params+ is the list of program parameters to parse.
+  # - +options+ is a hash containing the long option names as keys, and hashes
+  #   containing special flags for the options as values (example below).
+  # - +flags+ is optional. It supports the following keys:
+  #   - +:posix_order+: Stop processing parameters when a non-option is seen.
+  #     Set this to +true+ if you want to implement subcommands.
+  #
+  # == Example +options+
+  #
+  #   {
+  #     version: {},
+  #     verbose: {short: 'v'},
+  #     server: {nargs: (1..2)},
+  #     username: {nargs: 1},
+  #     password: {nargs: 1},
+  #   }
+  #
+  # The keys of the +options+ hash can be either strings or symbols.
   #
   # Options that have no special flags should have an empty hash as the value.
-  # Option flags:
-  #   - short: specify a short option letter to associate with the long option
-  #   - nargs: specify an exact number or range of possible numbers of
-  #     arguments to the option
+  #
+  # Possible option flags:
+  # - +:short+: specify a short option letter to associate with the long option
+  # - +:nargs+: specify an exact number or range of possible numbers of
+  #   arguments to the option
+  #
+  # == Return values
+  #
+  # The returned +opts+ value will be a hash with the observed options as
+  # keys and any option arguments as values.
+  # The returned +args+ will be an array of the unprocessed parameters (if
+  # +:posix_order+ was passed in +flags+, this array might contain further
+  # options that were not processed after observing a non-option parameters.
   def parse(params, options, flags = {})
     options = _massage_options(options)
     opts = {}
