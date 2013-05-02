@@ -14,10 +14,7 @@ require "yawpa/version"
 # - Options can be defined with a range specifying the allowed number of parameters
 module Yawpa
   # Exception class raised when an unknown option is observed
-  class UnknownOptionException < Exception; end
-
-  # Exception class raised when invalid option arguments are observed
-  class InvalidArgumentsException < Exception; end
+  class ArgumentParsingException < Exception; end
 
   module_function
   # :call-seq:
@@ -68,7 +65,7 @@ module Yawpa
       if param =~ /^--([^=]+)(?:=(.+))?$/
         param_name, val = $1, $2
         if options[param_name].nil?
-          raise UnknownOptionException.new("Unknown option '#{param_name}'")
+          raise ArgumentParsingException.new("Unknown option '#{param_name}'")
         end
         opt_config = options[param_name]
         param_key = opt_config[:key]
@@ -84,7 +81,7 @@ module Yawpa
         while short_idx < short_flags.length
           opt_config = _find_opt_config_by_short_name(options, short_flags[short_idx])
           if opt_config.nil?
-            raise UnknownOptionException.new("Unknown option '-#{short_flags[short_idx]}'")
+            raise ArgumentParsingException.new("Unknown option '-#{short_flags[short_idx]}'")
           end
           param_key = opt_config[:key]
           if opt_config[:nargs].last == 0
@@ -133,7 +130,7 @@ module Yawpa
       n_gathered += 1
     end
     if n_gathered < nargs.first
-      raise InvalidArgumentsException.new("Not enough arguments supplied for option '#{param_key}'")
+      raise ArgumentParsingException.new("Not enough arguments supplied for option '#{param_key}'")
     end
     num_indices_used
   end
