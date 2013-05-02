@@ -29,6 +29,9 @@ module Yawpa
   #   - +:posix_order+: Stop processing parameters when a non-option is seen.
   #     Set this to +true+ if you want to implement subcommands.
   #
+  # An ArgumentParsingException will be raised if an unknown option is observed
+  # or insufficient arguments are present for an option.
+  #
   # == Example +options+
   #
   #   {
