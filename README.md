@@ -73,6 +73,7 @@ or insufficient arguments are present for an option.
   server: {nargs: (1..2)},
   username: {nargs: 1},
   password: {nargs: 1},
+  color: {boolean: true},
 }
 ```
 
@@ -81,9 +82,12 @@ The keys of the `options` hash can be either strings or symbols.
 Options that have no special flags should have an empty hash as the value.
 
 Possible option flags:
+
 - `:short`: specify a short option letter to associate with the long option
 - `:nargs`: specify an exact number or range of possible numbers of
   arguments to the option
+- `:boolean`: if true, specify that the option is a toggleable boolean
+  option and allow a prefix of "no" to turn it off.
 
 ### Return values
 
