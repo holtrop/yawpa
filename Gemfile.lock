@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    yawpa (1.0.0)
+    yawpa (1.1.0)
 
 GEM
   remote: https://rubygems.org/
