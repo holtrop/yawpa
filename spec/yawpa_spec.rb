@@ -19,7 +19,7 @@ describe Yawpa do
     it "returns boolean options which are set" do
       options = {
         one: {},
-        two: {},
+        two: nil,
         three: {},
       }
       params = ['--one', 'arg', '--two', 'arg2']
@@ -205,7 +205,7 @@ describe Yawpa do
     it "ignores options after arguments in posix_order mode" do
       options = {
         one: {},
-        two: {},
+        two: nil,
       }
       params = ['--one', 'arg', '--two']
       opts, args = Yawpa.parse(params, options, posix_order: true)
@@ -216,7 +216,8 @@ describe Yawpa do
 
     it "supports :boolean option flag" do
       options = {
-        push: {boolean: true},
+        push: :boolean,
+        pull: {boolean: true},
       }
 
       opts, args = Yawpa.parse(%w[hi], options)
@@ -227,8 +228,8 @@ describe Yawpa do
       expect(opts).to eq(push: true)
       expect(args).to eq(%w[one two])
 
-      opts, args = Yawpa.parse(%w[arg --nopush], options)
-      expect(opts).to eq(push: false)
+      opts, args = Yawpa.parse(%w[arg --nopush --pull], options)
+      expect(opts).to eq(push: false, pull: true)
       expect(args).to eq(%w[arg])
     end
   end

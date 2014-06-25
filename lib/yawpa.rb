@@ -27,30 +27,34 @@ module Yawpa
   # Example +options+:
   #
   #   {
-  #     version: {},
+  #     version: nil,
   #     verbose: {short: 'v'},
   #     server: {nargs: (1..2)},
   #     username: {nargs: 1},
   #     password: {nargs: 1},
-  #     color: {boolean: true},
+  #     color: :boolean,
   #   }
   #
   # The keys of the +options+ Hash can be either strings or symbols.
   #
-  # Options that have no special flags should have an empty hash as the value.
-  #
-  # Possible option flags:
-  # - +:short+: specify a short option letter to associate with the long option
-  # - +:nargs+: specify an exact number or range of possible numbers of
-  #   arguments to the option
-  # - +:boolean+: if true, specify that the option is a toggleable boolean
-  #   option and allow a prefix of "no" to turn it off.
   #
   # @param params [Array]
   #   List of program parameters to parse.
   # @param options [Hash]
-  #   Hash containing the long option names as keys, and hashes containing
-  #   special flags for the options as values (example above).
+  #   Hash containing the long option names as keys, and values containing
+  #   special flags for the options as values (examples above).
+  #   Possible values:
+  #   +nil+:: No special flags for this option (equivalent to +{}+)
+  #   +:boolean+::
+  #     The option is a toggleable boolean option (equivalent to
+  #     +{boolean: true}+)
+  #   Hash::
+  #     Possible option flags:
+  #     - +:short+: specify a short option letter to associate with the long option
+  #     - +:nargs+: specify an exact number or range of possible numbers of
+  #       arguments to the option
+  #     - +:boolean+: if true, specify that the option is a toggleable boolean
+  #       option and allow a prefix of "no" to turn it off.
   # @param flags [Hash]
   #   Optional flags dictating how {.parse} should do its job.
   # @option flags [Boolean] :posix_order
@@ -162,6 +166,8 @@ module Yawpa
   def self._massage_options(options)
     {}.tap do |newopts|
       options.each_pair do |k, v|
+        v = {} if v.nil?
+        v = {boolean: true} if v == :boolean
         newkey = k.to_s
         newopts[newkey] = {key: k}
         nargs = v[:nargs] || 0
