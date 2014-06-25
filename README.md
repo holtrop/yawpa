@@ -106,3 +106,16 @@ keys and any option arguments as values.
 The returned `args` will be an array of the unprocessed parameters (if
 `:posix_order` was passed in `flags`, this array might contain further
 options that were not processed after observing a non-option parameters).
+
+## Release Notes
+
+### v1.1.0
+
+- Add `:boolean` option flag.
+- Support `nil` or `:boolean` as shortcut option configuration values.
+- Update documentation to YARD.
+- Update specs to RSpec 3.
+
+### v1.0.0
+
+- Initial Release
