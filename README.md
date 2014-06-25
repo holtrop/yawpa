@@ -59,6 +59,16 @@ Parse input parameters looking for options according to rules given in flags
 - `params` is the list of program parameters to parse.
 - `options` is a hash containing the long option names as keys, and hashes
   containing special flags for the options as values (example below).
+  Possible values:
+  - `nil`: No special flags for this option (equivalent to `{}`)
+  - `:boolean`: The option is a toggleable boolean option (equivalent to
+    `{boolean: true}`)
+  - `Hash`: Possible option flags:
+    - `:short`: specify a short option letter to associate with the long option
+    - `:nargs`: specify an exact number or range of possible numbers of
+      arguments to the option
+    - `:boolean`: if true, specify that the option is a toggleable boolean
+      option and allow a prefix of "no" to turn it off.
 - `flags` is optional. It supports the following keys:
   - `:posix_order`: Stop processing parameters when a non-option is seen.
     Set this to `true` if you want to implement subcommands.
@@ -70,18 +80,16 @@ or insufficient arguments are present for an option.
 
 ```ruby
 {
-  version: {},
-  verbose: {short: "v"},
+  version: nil,
+  verbose: {short: 'v'},
   server: {nargs: (1..2)},
   username: {nargs: 1},
   password: {nargs: 1},
-  color: {boolean: true},
+  color: :boolean,
 }
 ```
 
 The keys of the `options` hash can be either strings or symbols.
-
-Options that have no special flags should have an empty hash as the value.
 
 Possible option flags:
 
