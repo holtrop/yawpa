@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Yawpa do
-  describe 'parse' do
+  describe ".parse" do
     it "returns everything as arguments when no options present" do
       options = { }
       params = ['one', 'two', 'three', 'four']
@@ -212,6 +212,24 @@ describe Yawpa do
       expect(opts[:one]).to be_truthy
       expect(opts[:two]).to be_falsey
       expect(args).to eq(['arg', '--two'])
+    end
+
+    it "supports :boolean option flag" do
+      options = {
+        push: {boolean: true},
+      }
+
+      opts, args = Yawpa.parse(%w[hi], options)
+      expect(opts).to eq({})
+      expect(args).to eq(%w[hi])
+
+      opts, args = Yawpa.parse(%w[--push one two], options)
+      expect(opts).to eq(push: true)
+      expect(args).to eq(%w[one two])
+
+      opts, args = Yawpa.parse(%w[arg --nopush], options)
+      expect(opts).to eq(push: false)
+      expect(args).to eq(%w[arg])
     end
   end
 end

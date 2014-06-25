@@ -73,12 +73,22 @@ module Yawpa
       param = params[i]
       if param =~ /^--([^=]+)(?:=(.+))?$/
         param_name, val = $1, $2
+        bool_val = true
         if options[param_name].nil?
-          raise ArgumentParsingException.new("Unknown option '#{param_name}'")
+          if param_name =~ /^no(.*)$/
+            test_param_name = $1
+            if options[test_param_name]
+              param_name = test_param_name
+              bool_val = false
+            end
+          end
         end
         opt_config = options[param_name]
+        raise ArgumentParsingException.new("Unknown option '#{param_name}'") unless opt_config
         param_key = opt_config[:key]
-        if opt_config[:nargs].last == 0
+        if opt_config[:boolean]
+          opts[param_key] = bool_val
+        elsif opt_config[:nargs].last == 0
           opts[param_key] = true
         else
           opts[param_key] = []
@@ -155,6 +165,7 @@ module Yawpa
         nargs = (nargs..nargs) if nargs.is_a?(Fixnum)
         newopts[newkey][:nargs] = nargs
         newopts[newkey][:short] = v[:short] || ''
+        newopts[newkey][:boolean] = v[:boolean]
       end
     end
   end
