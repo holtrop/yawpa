@@ -2,6 +2,8 @@
 
 Yet Another Way to Parse Arguments is an argument-parsing library for Ruby.
 
+[![Gem Version](https://badge.fury.io/rb/yawpa.png)](http://badge.fury.io/rb/yawpa)
+
 ## Features
 
 - POSIX or non-POSIX mode (supports subcommands using POSIX mode)
