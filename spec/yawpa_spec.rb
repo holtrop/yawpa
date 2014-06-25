@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Yawpa do
   describe ".parse" do
     it "returns everything as arguments when no options present" do
