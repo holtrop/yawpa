@@ -7,32 +7,24 @@ require "yawpa/version"
 # it just provides a simple functional interface for parsing options,
 # supporting subcommands and arbitrary numbers of arguments for each option.
 #
-# == Features
-#
+# Features:
 # - POSIX or non-POSIX mode (supports subcommands using POSIX mode)
 # - Options can require an arbitrary number of parameters
-# - Options can be defined with a range specifying the allowed number of parameters
+# - Options can be defined with a range specifying the allowed number of
+#   parameters
 module Yawpa
-  # Exception class raised when an unknown option is observed
+  # Exception class raised when an unknown option is observed.
   class ArgumentParsingException < Exception; end
 
-  module_function
-  # :call-seq:
+  # Parse input parameters looking for options according to rules given in
+  # flags.
+  # Syntax:
   #   opts, args = parse(params, options, flags = {})
-  #
-  # Parse input parameters looking for options according to rules given in flags
-  #
-  # - +params+ is the list of program parameters to parse.
-  # - +options+ is a hash containing the long option names as keys, and hashes
-  #   containing special flags for the options as values (example below).
-  # - +flags+ is optional. It supports the following keys:
-  #   - +:posix_order+: Stop processing parameters when a non-option is seen.
-  #     Set this to +true+ if you want to implement subcommands.
   #
   # An ArgumentParsingException will be raised if an unknown option is observed
   # or insufficient arguments are present for an option.
   #
-  # == Example +options+
+  # Example +options+:
   #
   #   {
   #     version: {},
@@ -42,7 +34,7 @@ module Yawpa
   #     password: {nargs: 1},
   #   }
   #
-  # The keys of the +options+ hash can be either strings or symbols.
+  # The keys of the +options+ Hash can be either strings or symbols.
   #
   # Options that have no special flags should have an empty hash as the value.
   #
@@ -51,14 +43,28 @@ module Yawpa
   # - +:nargs+: specify an exact number or range of possible numbers of
   #   arguments to the option
   #
-  # == Return values
+  # @param params [Array]
+  #   List of program parameters to parse.
+  # @param options [Hash]
+  #   Hash containing the long option names as keys, and hashes containing
+  #   special flags for the options as values (example above).
+  # @param flags [Hash]
+  #   Optional flags dictating how {.parse} should do its job.
+  # @option flags [Boolean] :posix_order
+  #   Stop processing parameters when a non-option argument is seen.
+  #   Set this to +true+ if you want to implement subcommands.
   #
-  # The returned +opts+ value will be a hash with the observed options as
-  # keys and any option arguments as values.
-  # The returned +args+ will be an array of the unprocessed parameters (if
-  # +:posix_order+ was passed in +flags+, this array might contain further
-  # options that were not processed after observing a non-option parameters).
-  def parse(params, options, flags = {})
+  # @return [Array]
+  #   Two-element array containing +opts+ and +args+ return values.
+  #   +opts+::
+  #     The returned +opts+ value will be a Hash with the observed
+  #     options as keys and any option arguments as values.
+  #   +args+::
+  #     The returned +args+ will be an Array of the unprocessed
+  #     parameters (if +:posix_order+ was passed in +flags+, this array might
+  #     contain further options that were not processed after observing a
+  #     non-option parameters).
+  def self.parse(params, options, flags = {})
     options = _massage_options(options)
     opts = {}
     args = []
@@ -116,7 +122,7 @@ module Yawpa
   end
 
   # Internal helper method to gather arguments for an option
-  def _gather(nargs, start_idx, params, initial, param_key, result) # :nodoc:
+  def self._gather(nargs, start_idx, params, initial, param_key, result)
     n_gathered = 0
     if initial and initial != ''
       result << initial
@@ -137,9 +143,10 @@ module Yawpa
     end
     num_indices_used
   end
+  private_class_method :_gather
 
   # Internal helper method to format the options in a consistent format
-  def _massage_options(options) # :nodoc:
+  def self._massage_options(options)
     {}.tap do |newopts|
       options.each_pair do |k, v|
         newkey = k.to_s
@@ -151,12 +158,14 @@ module Yawpa
       end
     end
   end
+  private_class_method :_massage_options
 
   # Internal helper method to find an option configuration by short name
-  def _find_opt_config_by_short_name(options, short_name) # :nodoc:
+  def self._find_opt_config_by_short_name(options, short_name)
     options.each_pair do |k, v|
       return v if v[:short] == short_name
     end
     nil
   end
+  private_class_method :_find_opt_config_by_short_name
 end

@@ -10,41 +10,47 @@ Yet Another Way to Parse Arguments is an argument-parsing library for Ruby.
 
 ## Example 1
 
-    require 'yawpa'
+```ruby
+require "yawpa"
 
-    options = {
-      version: {},
-      verbose: {short: 'v'},
-      get: {nargs: 1},
-      set: {nargs: 2},
-    }
-    opts, args = Yawpa.parse(ARGV, options)
-    opts.each_pair do |opt, val|
-    end
+options = {
+  version: {},
+  verbose: {short: "v"},
+  get: {nargs: 1},
+  set: {nargs: 2},
+}
+opts, args = Yawpa.parse(ARGV, options)
+opts.each_pair do |opt, val|
+end
+```
 
 ## Example 2
 
-    require 'yawpa'
+```ruby
+require "yawpa"
 
-    options = {
-      version: {},
-      help: {short: 'h'},
-    }
-    opts, args = Yawpa.parse(ARGV, options, posix_order: true)
-    if opts[:version]
-      puts "my app, version 1.2.3"
-    end
-    if args[0] == 'subcommand'
-      subcommand_options = {
-        'server': {nargs: (1..2), short: 's'},
-        'dst': {nargs: 1, short: 'd'},
-      }
-      opts, args = Yawpa.parse(args, subcommand_options)
-    end
+options = {
+  version: {},
+  help: {short: "h"},
+}
+opts, args = Yawpa.parse(ARGV, options, posix_order: true)
+if opts[:version]
+  puts "my app, version 1.2.3"
+end
+if args[0] == "subcommand"
+  subcommand_options = {
+    "server": {nargs: (1..2), short: "s"},
+    "dst": {nargs: 1, short: "d"},
+  }
+  opts, args = Yawpa.parse(args, subcommand_options)
+end
+```
 
 ## Using Yawpa.parse()
 
-    opts, args = Yawpa.parse(params, options, flags = {})
+```ruby
+opts, args = Yawpa.parse(params, options, flags = {})
+```
 
 Parse input parameters looking for options according to rules given in flags
 
@@ -60,13 +66,15 @@ or insufficient arguments are present for an option.
 
 ### Example `options`
 
-    {
-      version: {},
-      verbose: {short: 'v'},
-      server: {nargs: (1..2)},
-      username: {nargs: 1},
-      password: {nargs: 1},
-    }
+```ruby
+{
+  version: {},
+  verbose: {short: "v"},
+  server: {nargs: (1..2)},
+  username: {nargs: 1},
+  password: {nargs: 1},
+}
+```
 
 The keys of the `options` hash can be either strings or symbols.
 

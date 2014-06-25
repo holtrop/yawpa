@@ -6,14 +6,13 @@ rescue Bundler::BundlerError => e
 end
 require "bundler/gem_tasks"
 require 'rspec/core/rake_task'
-require "rdoc/task"
+require "yard"
 
 RSpec::Core::RakeTask.new('spec')
 
 task :default => :spec
 
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = 'Yet Another Way to Parse Arguments'
-  rdoc.rdoc_files.include('lib/**/*.rb')
+YARD::Rake::YardocTask.new do |yard|
+  yard.options = ["--title", "Yet Another Way to Parse Arguments"]
+  yard.files = ["lib/**/*.rb"]
 end
