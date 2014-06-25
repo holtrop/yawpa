@@ -113,7 +113,7 @@ module Yawpa
 
     # Condense 1-element arrays of option values to just the element itself
     opts.each_key do |k|
-      if opts[k].class == Array and opts[k].length == 1
+      if opts[k].is_a?(Array) and opts[k].length == 1
         opts[k] = opts[k].first
       end
     end
@@ -152,7 +152,7 @@ module Yawpa
         newkey = k.to_s
         newopts[newkey] = {key: k}
         nargs = v[:nargs] || 0
-        nargs = (nargs..nargs) if nargs.class == Fixnum
+        nargs = (nargs..nargs) if nargs.is_a?(Fixnum)
         newopts[newkey][:nargs] = nargs
         newopts[newkey][:short] = v[:short] || ''
       end
