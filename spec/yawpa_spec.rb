@@ -230,5 +230,32 @@ describe Yawpa do
       expect(opts).to eq(push: false, pull: true)
       expect(args).to eq(%w[arg])
     end
+
+    it "returns non-frozen strings" do
+      options = {
+        o1: {nargs: 1, short: "1"},
+        o2: {nargs: 1, short: "2"},
+        o3: {nargs: 1, short: "3"},
+        o4: {nargs: 1, short: "4"},
+      }
+
+      arguments = %w[--o1=one --o2 two -3 three -4four arg].map(&:freeze)
+
+      opts, args = Yawpa.parse(arguments, options)
+      expect(opts[:o1].frozen?).to be_falsey
+      expect{opts[:o1].sub!(/./, '-')}.to_not raise_error
+      expect(opts[:o2].frozen?).to be_falsey
+      expect{opts[:o2].sub!(/./, '-')}.to_not raise_error
+      expect(opts[:o3].frozen?).to be_falsey
+      expect{opts[:o3].sub!(/./, '-')}.to_not raise_error
+      expect(opts[:o4].frozen?).to be_falsey
+      expect{opts[:o4].sub!(/./, '-')}.to_not raise_error
+      expect(args[0].frozen?).to be_falsey
+      expect{args[0].sub!(/./, '-')}.to_not raise_error
+
+      opts, args = Yawpa.parse(arguments, options, posix_order: true)
+      expect(args[0].frozen?).to be_falsey
+      expect{args[0].sub!(/./, '-')}.to_not raise_error
+    end
   end
 end

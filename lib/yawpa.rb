@@ -129,10 +129,10 @@ module Yawpa
             short_idx += 1
           end
         elsif flags[:posix_order]
-          args = params[i, params.length]
+          args = params[i, params.length].map(&:dup)
           break
         else
-          args << params[i]
+          args << params[i].dup
         end
         i += 1
       end
@@ -161,7 +161,7 @@ module Yawpa
       while n_gathered < nargs.last and
             index < params.length and
             params[index][0] != '-' do
-        result << params[index]
+        result << params[index].dup
         index += 1
         num_indices_used += 1
         n_gathered += 1
