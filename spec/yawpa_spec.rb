@@ -11,7 +11,7 @@ describe Yawpa do
     it "raises an exception when an invalid option is passed" do
       options = { }
       params = ['one', '--option', 'two']
-      expect { Yawpa.parse(params, options) }.to raise_error
+      expect { Yawpa.parse(params, options) }.to raise_error(Yawpa::ArgumentParsingException, /Unknown option/)
     end
 
     it "returns boolean options which are set" do
@@ -53,7 +53,7 @@ describe Yawpa do
         opt: {nargs: 2},
       }
       params = ['--opt', 'val']
-      expect { Yawpa.parse(params, options) }.to raise_error
+      expect { Yawpa.parse(params, options) }.to raise_error(Yawpa::ArgumentParsingException, /Not enough arguments supplied/)
     end
 
     it "uses --opt=val syntax for an option's value" do
@@ -179,7 +179,7 @@ describe Yawpa do
         a: {short: 'a'},
       }
       params = ['-ab']
-      expect { Yawpa.parse(params, options) }.to raise_error
+      expect { Yawpa.parse(params, options) }.to raise_error(Yawpa::ArgumentParsingException, /Unknown option/)
     end
 
     it "raises an error when not enough arguments are given to short option" do
@@ -187,7 +187,7 @@ describe Yawpa do
         a: {nargs: 1, short: 'a'},
       }
       params = ['-a']
-      expect { Yawpa.parse(params, options) }.to raise_error
+      expect { Yawpa.parse(params, options) }.to raise_error(Yawpa::ArgumentParsingException, /Not enough arguments supplied/)
     end
 
     it "overwrites option value when short option used after long" do
