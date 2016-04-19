@@ -109,6 +109,10 @@ options that were not processed after observing a non-option parameters).
 
 ## Release Notes
 
+### v1.2.0
+
+- Always return non-frozen strings
+
 ### v1.1.0
 
 - Add `:boolean` option flag.
