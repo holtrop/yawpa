@@ -181,7 +181,7 @@ module Yawpa
           newkey = k.to_s
           newopts[newkey] = {key: k}
           nargs = v[:nargs] || 0
-          nargs = (nargs..nargs) if nargs.is_a?(Fixnum)
+          nargs = (nargs..nargs) if nargs.is_a?(Integer)
           newopts[newkey][:nargs] = nargs
           newopts[newkey][:short] = v[:short] || ''
           newopts[newkey][:boolean] = v[:boolean]
