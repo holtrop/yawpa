@@ -10,6 +10,21 @@ Yet Another Way to Parse Arguments is an argument-parsing library for Ruby.
 - Options can require an arbitrary number of parameters
 - Options can be defined with a range specifying the allowed number of parameters
 
+## Usage
+
+Yawpa can be used from another Ruby gem as a regular gem dependency, by adding
+a dependency on the "yawpa" gem at a particular version.
+For example:
+
+```ruby
+  gem.add_dependency "yawpa", "~> 1.3"
+```
+
+Yawpa can also be used by simply copying the contents of the one source file
+into any project that desires to use it.
+This can be useful if you desire to avoid having any external dependencies, or
+if you are producing a redistributable standalone script.
+
 ## Example 1
 
 ```ruby
