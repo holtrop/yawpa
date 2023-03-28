@@ -104,6 +104,8 @@ or insufficient arguments are present for an option.
 }
 ```
 
+### `options` Values
+
 The keys of the `options` hash can be either strings or symbols.
 
 Possible option flags:
