@@ -135,6 +135,14 @@ options that were not processed after observing a non-option parameters).
 
 ## Release Notes
 
+### v1.4.0
+
+- Add multi option flag to allow accepting multiple instances of an argument
+
+### v1.3.0
+
+- Remove use of Fixnum for Ruby 2.4+ compatibility
+
 ### v1.2.0
 
 - Always return non-frozen strings
