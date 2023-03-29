@@ -84,6 +84,10 @@ Parse input parameters looking for options according to rules given in flags
       arguments to the option
     - `:boolean`: if true, specify that the option is a toggleable boolean
       option and allow a prefix of "no" to turn it off.
+    - `:multi`: if true, instead of the last value specified for this
+      option being returned, an Array of all values specified for this
+      option will be returned, allowing the argument to appear multiple
+      times in the argument list
 - `flags` is optional. It supports the following keys:
   - `:posix_order`: Stop processing parameters when a non-option is seen.
     Set this to `true` if you want to implement subcommands.
@@ -101,6 +105,7 @@ or insufficient arguments are present for an option.
   username: {nargs: 1},
   password: {nargs: 1},
   color: :boolean,
+  scan: {nargs: 1, multi: true},
 }
 ```
 
@@ -115,6 +120,10 @@ Possible option flags:
   arguments to the option
 - `:boolean`: if true, specify that the option is a toggleable boolean
   option and allow a prefix of "no" to turn it off.
+- `:multi`: if true, instead of the last value specified for this
+  option being returned, an Array of all values specified for this
+  option will be returned, allowing the argument to appear multiple
+  times in the argument list
 
 ### Return values
 

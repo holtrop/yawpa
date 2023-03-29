@@ -37,6 +37,7 @@ module Yawpa
     #     username: {nargs: 1},
     #     password: {nargs: 1},
     #     color: :boolean,
+    #     scan: {nargs: 1, multi: true},
     #   }
     #
     # The keys of the +options+ Hash can be either strings or symbols.
@@ -60,6 +61,10 @@ module Yawpa
     #       arguments to the option
     #     - +:boolean+: if true, specify that the option is a toggleable
     #       boolean option and allow a prefix of "no" to turn it off.
+    #     - +:multi+: if true, instead of the last value specified for this
+    #       option being returned, an Array of all values specified for this
+    #       option will be returned, allowing the argument to appear multiple
+    #       times in the argument list
     # @param flags [Hash]
     #   Optional flags dictating how {.parse} should do its job.
     # @option flags [Boolean] :posix_order
@@ -99,13 +104,14 @@ module Yawpa
           raise ArgumentParsingException.new("Unknown option '#{param_name}'") unless opt_config
           param_key = opt_config[:key]
           if opt_config[:boolean]
-            opts[param_key] = bool_val
+            param_val = bool_val
           elsif opt_config[:nargs].last == 0
-            opts[param_key] = true
+            param_val = true
           else
-            opts[param_key] = []
-            i += _gather(opt_config[:nargs], i + 1, params, val, param_key, opts[param_key])
+            param_val = []
+            i += _gather(opt_config[:nargs], i + 1, params, val, param_key, param_val)
           end
+          _record_opt_val(opts, opt_config, param_key, param_val)
         elsif param =~ /^-(.+)$/
           short_flags = $1
           short_idx = 0
@@ -116,15 +122,17 @@ module Yawpa
             end
             param_key = opt_config[:key]
             if opt_config[:nargs].last == 0
-              opts[param_key] = true
+              param_val = true
+              _record_opt_val(opts, opt_config, param_key, param_val)
             else
-              opts[param_key] = []
+              param_val = []
               i += _gather(opt_config[:nargs],
                            i + 1,
                            params,
                            short_flags[short_idx + 1, short_flags.length],
                            param_key,
-                           opts[param_key])
+                           param_val)
+              _record_opt_val(opts, opt_config, param_key, param_val)
               break
             end
             short_idx += 1
@@ -138,17 +146,23 @@ module Yawpa
         i += 1
       end
 
-      # Condense 1-element arrays of option values to just the element itself
-      opts.each_key do |k|
-        if opts[k].is_a?(Array) and opts[k].length == 1
-          opts[k] = opts[k].first
-        end
-      end
-
       return [opts, args]
     end
 
     private
+
+    def _record_opt_val(opts, opt_config, param_key, value)
+      # Condense 1-element arrays of option values to just the element itself
+      if value.is_a?(Array) and value.length == 1
+        value = value.first
+      end
+      if opt_config[:multi]
+        opts[param_key] ||= []
+        opts[param_key] << value
+      else
+        opts[param_key] = value
+      end
+    end
 
     # Internal helper method to gather arguments for an option
     def _gather(nargs, start_idx, params, initial, param_key, result)
@@ -186,6 +200,7 @@ module Yawpa
           newopts[newkey][:nargs] = nargs
           newopts[newkey][:short] = v[:short] || ''
           newopts[newkey][:boolean] = v[:boolean]
+          newopts[newkey][:multi] = v[:multi]
         end
       end
     end

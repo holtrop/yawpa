@@ -257,5 +257,36 @@ describe Yawpa do
       expect(args[0].frozen?).to be_falsey
       expect{args[0].sub!(/./, '-')}.to_not raise_error
     end
+
+    it "overwrites an option's value when multiple argument instances are present and multi flag is not set" do
+      options = {
+        scan: {short: "s", nargs: 1},
+      }
+      params = ['--scan', 'scan1', '-s', 'scan2', 'arg']
+      opts, args = Yawpa.parse(params, options)
+      expect(opts[:scan]).to eq('scan2')
+      expect(args).to eq(['arg'])
+    end
+
+    it "returns an Array of option values when multiple argument instances are present and multi flag is set" do
+      options = {
+        scan: {short: "s", nargs: 1, multi: true},
+      }
+      params = ['--scan', 'scan1', '-s', 'scan2', 'arg']
+      opts, args = Yawpa.parse(params, options)
+      expect(opts[:scan]).to eq(%w[scan1 scan2])
+      expect(args).to eq(['arg'])
+    end
+
+    it "returns an Array of Arrays of option values when multiple argument instances are present and multi flag is set and nargs > 1" do
+      options = {
+        opt: {short: "o", nargs: 2, multi: true},
+      }
+      params = %w[--opt o1 o2 -o o3 o4 a1 a2]
+      opts, args = Yawpa.parse(params, options)
+      expect(opts[:opt]).to eq([%w[o1 o2], %w[o3 o4]])
+      expect(args).to eq(%w[a1 a2])
+    end
+
   end
 end
